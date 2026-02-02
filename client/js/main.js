@@ -9,27 +9,25 @@ class Game {
     constructor() {
         this.canvas = document.getElementById('game-canvas');
         this.ctx = this.canvas.getContext('2d');
+        
+        // Set canvas size FIRST
+        this.canvas.width = 800;
+        this.canvas.height = 600;
+        
+        // Now create renderer (it reads canvas dimensions)
         this.renderer = new VectorRenderer(this.ctx);
         this.state = new GameState();
         
-        this.setupCanvas();
         this.setupEventListeners();
         this.lastTime = 0;
-    }
-    
-    setupCanvas() {
-        // Set canvas resolution
-        this.canvas.width = 800;
-        this.canvas.height = 600;
+        this.running = false;
     }
     
     setupEventListeners() {
-        // Menu buttons
         document.getElementById('btn-stage1').addEventListener('click', () => {
             this.startStage(1);
         });
         
-        // Keyboard controls
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
     }
@@ -49,11 +47,15 @@ class Game {
     startStage(stageNum) {
         document.getElementById('menu-screen').classList.remove('active');
         
-        // Dynamically load stage module
         import(`./stages/stage${stageNum}.js`).then(module => {
             this.state.currentStage = new module.default(this.renderer, this.state);
             this.state.currentStage.init();
-            this.gameLoop(0);
+            
+            if (!this.running) {
+                this.running = true;
+                this.lastTime = performance.now();
+                requestAnimationFrame((t) => this.gameLoop(t));
+            }
         });
     }
     
@@ -61,8 +63,9 @@ class Game {
         const deltaTime = (timestamp - this.lastTime) / 1000;
         this.lastTime = timestamp;
         
-        // Clear canvas
-        this.renderer.clear();
+        // Clear entire canvas
+        this.ctx.fillStyle = '#0a0a0a';
+        this.ctx.fillRect(0, 0, 800, 600);
         
         // Update and render current stage
         if (this.state.currentStage) {

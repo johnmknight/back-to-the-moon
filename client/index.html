@@ -14,6 +14,27 @@
             <div id="fuel">FUEL: 100%</div>
             <div id="altitude">ALT: 0000</div>
         </div>
+        
+        <!-- Debug Panel (toggle with P) -->
+        <div id="debug-panel" class="hidden">
+            <div class="debug-title">DEBUG / SETTINGS</div>
+            <div class="debug-row">
+                <label for="gravity-slider">GRAVITY:</label>
+                <input type="range" id="gravity-slider" min="5" max="80" value="25">
+                <span id="gravity-value">25</span>
+            </div>
+            <div class="debug-row">
+                <label for="thrust-slider">THRUST:</label>
+                <input type="range" id="thrust-slider" min="20" max="120" value="60">
+                <span id="thrust-value">60</span>
+            </div>
+            <div class="debug-row">
+                <label for="fuel-slider">FUEL:</label>
+                <input type="range" id="fuel-slider" min="0" max="100" value="100">
+                <span id="fuel-value">100</span>
+            </div>
+            <div class="debug-hint">P TO RESUME</div>
+        </div>
     </div>
     
     <div id="menu-screen" class="screen active">
