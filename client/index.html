@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Back to the Moon!</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        <div id="ui-overlay">
+            <div id="score">SCORE: 0</div>
+            <div id="fuel">FUEL: 100%</div>
+            <div id="altitude">ALT: 0000</div>
+        </div>
+    </div>
+    
+    <div id="menu-screen" class="screen active">
+        <h1 class="title">BACK TO THE MOON!</h1>
+        <div class="menu-options">
+            <button id="btn-stage1">STAGE 1: LUNAR LANDER</button>
+            <button id="btn-stage2" disabled>STAGE 2: MOON PATROL</button>
+            <button id="btn-stage3" disabled>STAGE 3: ???</button>
+        </div>
+        <p class="credits">ARTEMIS PROGRAM - RETURN TO LUNA</p>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
