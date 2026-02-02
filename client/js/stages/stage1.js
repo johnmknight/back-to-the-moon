@@ -12,7 +12,7 @@ export default class Stage1 {
         // Intro sequence state
         this.introPhase = 'docked';  // 'docked', 'undocking', 'zooming', 'playing'
         this.introTimer = 0;
-        this.introZoom = 3.5;        // Start zoomed in on docked spacecraft
+        this.introZoom = 3;          // Start zoomed in on docked spacecraft
         this.undockDistance = 0;     // Separation distance during undock
         
         // Intro timing (seconds)
@@ -39,7 +39,7 @@ export default class Stage1 {
         };
         
         // Physics constants
-        this.gravity = 25;
+        this.gravity = 10;
         this.thrustPower = 60;
         this.rotationSpeed = 2.5;
         this.maxLandingSpeed = 40;
@@ -131,67 +131,102 @@ export default class Stage1 {
             { x: 8, y: -6 }
         ];
         
-        // Orion spacecraft shape - based on Artemis III reference
+        // RCS thruster flame (fires LEFT toward Orion during undocking)
+        // With -PI/2 rotation: local -y becomes screen LEFT
+        this.noseRcsFlame = [
+            { x: -3, y: -42 },
+            { x: 0, y: -55 },
+            { x: 3, y: -42 }
+        ];
+        
+        // Orion spacecraft shape - based on ESA Gateway blueprint
         // SCALED DOWN - Orion is much smaller than HLS Starship
-        // Crew Module (wide cone, blunt nose)
-        this.orionCapsule = [
-            { x: 0, y: -12 },     // Nose (blunter)
-            { x: 2, y: -10 },     // Upper cone
-            { x: 5, y: -4 },      // Wide cone angle
-            { x: 5, y: -2 },      // Heat shield top
-            { x: -5, y: -2 },     // Heat shield top
-            { x: -5, y: -4 },     // Wide cone angle
-            { x: -2, y: -10 }     // Upper cone
+        // From top to bottom: engine, service module, adapter ring, crew capsule, docking port
+        
+        // Engine bell at top
+        this.orionEngine = [
+            { x: -2, y: -18 },
+            { x: 2, y: -18 },
+            { x: 2, y: -14 },
+            { x: -2, y: -14 }
         ];
         
-        // Crew windows (row of small windows)
-        this.orionWindows = [
-            { x: -3, y: -6 },
-            { x: 0, y: -7 },
-            { x: 3, y: -6 }
-        ];
-        
-        // Service Module (cylindrical, same width as capsule base)
+        // Service Module (rectangle)
         this.orionServiceModule = [
-            { x: 5, y: -2 },      // Top right (connects to capsule)
-            { x: 5, y: 10 },      // Bottom right
-            { x: 3, y: 12 },      // Engine bell right
-            { x: -3, y: 12 },     // Engine bell left
-            { x: -5, y: 10 },     // Bottom left
-            { x: -5, y: -2 }      // Top left
+            { x: -6, y: -14 },
+            { x: 6, y: -14 },
+            { x: 6, y: 2 },
+            { x: -6, y: 2 }
         ];
         
-        // Four large solar panels in X-pattern (angled outward)
-        // Upper-left panel (angled up-left)
-        this.orionPanelUL = [
-            { x: -4, y: 0 },
-            { x: -22, y: -14 },
-            { x: -20, y: -16 },
-            { x: -3, y: -3 }
+        // Adapter ring - thin wider rectangle below service module
+        this.orionAdapterRing = [
+            { x: -8, y: 2 },
+            { x: 8, y: 2 },
+            { x: 8, y: 5 },
+            { x: -8, y: 5 }
         ];
         
-        // Upper-right panel (angled up-right)
-        this.orionPanelUR = [
-            { x: 4, y: 0 },
-            { x: 22, y: -14 },
-            { x: 20, y: -16 },
-            { x: 3, y: -3 }
+        // Crew Module capsule (tapered)
+        this.orionCapsule = [
+            { x: -8, y: 5 },
+            { x: 8, y: 5 },
+            { x: 5, y: 16 },
+            { x: -5, y: 16 }
         ];
         
-        // Lower-left panel (angled down-left)
-        this.orionPanelLL = [
-            { x: -4, y: 4 },
-            { x: -22, y: 18 },
-            { x: -20, y: 20 },
-            { x: -3, y: 7 }
+        // Docking adapter at bottom
+        this.orionDockingAdapter = [
+            { x: -3, y: 16 },
+            { x: 3, y: 16 },
+            { x: 3, y: 20 },
+            { x: -3, y: 20 }
         ];
         
-        // Lower-right panel (angled down-right)
-        this.orionPanelLR = [
-            { x: 4, y: 4 },
-            { x: 22, y: 18 },
-            { x: 20, y: 20 },
-            { x: 3, y: 7 }
+        // Solar panels - horizontal sticks from service module
+        this.orionPanelLeft = [
+            { x: -6, y: -6 },
+            { x: -28, y: -6 }
+        ];
+        
+        this.orionPanelRight = [
+            { x: 6, y: -6 },
+            { x: 28, y: -6 }
+        ];
+        
+        // No windows needed
+        this.orionWindows = [];
+        
+        // Lunar surface features (craters) for descent view
+        this.lunarCraters = [
+            { x: 200, y: 350, radius: 40 },
+            { x: 450, y: 280, radius: 65 },
+            { x: 600, y: 400, radius: 35 },
+            { x: 150, y: 200, radius: 25 },
+            { x: 350, y: 450, radius: 50 },
+            { x: 700, y: 250, radius: 30 },
+            { x: 100, y: 400, radius: 45 },
+            { x: 550, y: 150, radius: 28 },
+            { x: 300, y: 100, radius: 20 },
+            { x: 650, y: 500, radius: 55 },
+            { x: 50, y: 300, radius: 22 },
+            { x: 750, y: 380, radius: 38 },
+            // Smaller craters
+            { x: 280, y: 320, radius: 12 },
+            { x: 420, y: 180, radius: 15 },
+            { x: 520, y: 350, radius: 10 },
+            { x: 180, y: 480, radius: 18 },
+            { x: 380, y: 220, radius: 8 },
+            { x: 620, y: 320, radius: 14 },
+            { x: 80, y: 150, radius: 16 },
+            { x: 480, y: 420, radius: 11 }
+        ];
+        
+        // Surface ridge lines
+        this.lunarRidges = [
+            [{ x: 0, y: 250 }, { x: 150, y: 280 }, { x: 300, y: 260 }],
+            [{ x: 500, y: 350 }, { x: 650, y: 320 }, { x: 800, y: 340 }],
+            [{ x: 200, y: 500 }, { x: 350, y: 480 }, { x: 450, y: 520 }]
         ];
         
         // Twinkling stars
@@ -213,7 +248,7 @@ export default class Stage1 {
         // Start in intro sequence
         this.introPhase = 'docked';
         this.introTimer = 0;
-        this.introZoom = 3.5;
+        this.introZoom = 3;
         this.undockDistance = 0;
         
         // Position lander at start for docking display
@@ -487,8 +522,8 @@ export default class Stage1 {
                 const zoomProgress = this.introTimer / this.zoomOutDuration;
                 const easeOut = 1 - Math.pow(1 - zoomProgress, 2);  // Ease out
                 
-                // Zoom from 3.5x down to 1x
-                this.introZoom = 3.5 - (2.5 * easeOut);
+                // Zoom from 3x down to 1x
+                this.introZoom = 3 - (2 * easeOut);
                 
                 // Move lander from center to start position
                 this.lander.x = 400 + (80 - 400) * easeOut;
@@ -577,7 +612,7 @@ export default class Stage1 {
         // Reset to intro sequence
         this.introPhase = 'docked';
         this.introTimer = 0;
-        this.introZoom = 3.5;
+        this.introZoom = 3;
         this.undockDistance = 0;
         
         this.lander = {
@@ -643,23 +678,25 @@ export default class Stage1 {
         
         ctx.save();
         
-        // Twinkling stars
-        this.stars.forEach(star => {
-            const twinkle = Math.sin(this.starTime * star.twinkleSpeed + star.twinklePhase);
-            const size = star.baseSize * (0.5 + 0.5 * twinkle);
-            const alpha = 0.3 + 0.7 * (0.5 + 0.5 * twinkle);
-            
-            let color;
-            if (star.brightness > 0.7) {
-                color = `rgba(51, 255, 51, ${alpha})`;
-            } else if (star.brightness > 0.4) {
-                color = `rgba(34, 85, 34, ${alpha})`;
-            } else {
-                color = `rgba(60, 60, 60, ${alpha})`;
-            }
-            
-            r.drawDot(star.x, star.y, Math.max(0.5, size), color);
-        });
+        // Twinkling stars (only during space phases, not descent)
+        if (this.introPhase !== 'zooming') {
+            this.stars.forEach(star => {
+                const twinkle = Math.sin(this.starTime * star.twinkleSpeed + star.twinklePhase);
+                const size = star.baseSize * (0.5 + 0.5 * twinkle);
+                const alpha = 0.3 + 0.7 * (0.5 + 0.5 * twinkle);
+                
+                let color;
+                if (star.brightness > 0.7) {
+                    color = `rgba(51, 255, 51, ${alpha})`;
+                } else if (star.brightness > 0.4) {
+                    color = `rgba(34, 85, 34, ${alpha})`;
+                } else {
+                    color = `rgba(60, 60, 60, ${alpha})`;
+                }
+                
+                r.drawDot(star.x, star.y, Math.max(0.5, size), color);
+            });
+        }
         
         // During intro, render docking sequence
         if (this.introPhase !== 'playing') {
@@ -688,6 +725,33 @@ export default class Stage1 {
         const padCenter = this.worldToScreen(this.landingPad.x, this.landingPad.y - 15);
         r.drawCircle(padCenter.x, padCenter.y, this.innerRadius * this.currentZoom, r.colors.amber);
         r.drawCircle(padCenter.x, padCenter.y, this.outerRadius * this.currentZoom, r.colors.greenDim);
+        
+        // Rotating "LAND HERE" text around the landing zone
+        if (!this.gameOver) {
+            const text = "• LAND HERE • LAND HERE ";
+            const textRadius = (this.outerRadius + 15) * this.currentZoom;
+            const rotationSpeed = 0.5;
+            const baseAngle = this.starTime * rotationSpeed;
+            
+            ctx.save();
+            ctx.font = `${12 * this.currentZoom}px monospace`;
+            ctx.fillStyle = r.colors.amber;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            for (let i = 0; i < text.length; i++) {
+                const angle = baseAngle + (i / text.length) * Math.PI * 2;
+                const charX = padCenter.x + Math.cos(angle) * textRadius;
+                const charY = padCenter.y + Math.sin(angle) * textRadius;
+                
+                ctx.save();
+                ctx.translate(charX, charY);
+                ctx.rotate(angle + Math.PI / 2);
+                ctx.fillText(text[i], 0, 0);
+                ctx.restore();
+            }
+            ctx.restore();
+        }
         
         // Lander position on screen
         const landerScreen = this.worldToScreen(this.lander.x, this.lander.y);
@@ -765,37 +829,40 @@ export default class Stage1 {
         const screenCenterX = 400;
         const screenCenterY = 300;
         
-        // HLS rotation: -PI/2 = nose pointing LEFT (horizontal, parallel to moon surface)
+        // HLS rotation: -PI/2 = nose pointing LEFT (toward Orion)
         const hlsRotation = -Math.PI / 2;
-        // Orion rotation: PI/2 = nose pointing RIGHT (toward HLS for docking)
-        const orionRotation = Math.PI / 2;
+        // Orion rotation: -PI/2 = docking port (at bottom y=22) pointing RIGHT (toward HLS)
+        const orionRotation = -Math.PI / 2;
         
         // During zooming phase, transition to gameplay
         if (this.introPhase === 'zooming') {
+            // Draw lunar surface from above (bird's eye view) - static craters
+            
+            // Draw craters (static, no scaling)
+            this.lunarCraters.forEach(crater => {
+                // Crater rim
+                r.drawCircle(crater.x, crater.y, crater.radius, r.colors.greenDim);
+                // Inner shadow (offset circle for 3D effect)
+                if (crater.radius > 15) {
+                    r.drawCircle(crater.x + crater.radius * 0.15, crater.y + crater.radius * 0.15, 
+                                crater.radius * 0.6, r.colors.greenDim);
+                }
+            });
+            
+            // Draw ridge lines
+            this.lunarRidges.forEach(ridge => {
+                r.drawPolygon(ridge, r.colors.greenDim, false);
+            });
+            
             const landerScreen = this.worldToScreen(this.lander.x, this.lander.y);
             
             // Keep horizontal orientation throughout (nose pointing left)
-            // Draw HLS at transitioning position
+            // Draw HLS at transitioning position (viewed from above)
             r.drawShape(this.landerBody, landerScreen.x, landerScreen.y, hlsRotation, zoom, r.colors.green);
             r.drawShape(this.window, landerScreen.x, landerScreen.y, hlsRotation, zoom, r.colors.greenDim);
             r.drawShape(this.landingLegRight, landerScreen.x, landerScreen.y, hlsRotation, zoom, r.colors.green);
             r.drawShape(this.landingLegLeft, landerScreen.x, landerScreen.y, hlsRotation, zoom, r.colors.green);
             r.drawShape(this.landingLegCenter, landerScreen.x, landerScreen.y, hlsRotation, zoom, r.colors.green);
-            
-            // Draw terrain coming into view
-            const screenTerrain = this.terrain.map(p => this.worldToScreen(p.x, p.y));
-            r.drawPolygon(screenTerrain, r.colors.green, false);
-            
-            // Landing pad markers
-            const padLeft = this.landingPad.x - this.landingPad.width / 2;
-            const padRight = this.landingPad.x + this.landingPad.width / 2;
-            const padLeftScreen = this.worldToScreen(padLeft, this.landingPad.y);
-            const padRightScreen = this.worldToScreen(padRight, this.landingPad.y);
-            
-            r.drawLine(padLeftScreen.x, padLeftScreen.y - 5 * zoom, 
-                       padLeftScreen.x, padLeftScreen.y + 10 * zoom, r.colors.amber);
-            r.drawLine(padRightScreen.x, padRightScreen.y - 5 * zoom, 
-                       padRightScreen.x, padRightScreen.y + 10 * zoom, r.colors.amber);
         } else {
             // Docked or undocking phase
             // HLS and Orion are horizontal, side by side
@@ -803,9 +870,9 @@ export default class Stage1 {
             // They are docked nose-to-nose
             
             // Base positions (docked at center)
-            // HLS is much larger - nose at y=-40, Orion nose at y=-12
-            const hlsDockOffset = 42;   // HLS center offset from dock point
-            const orionDockOffset = 14; // Orion center offset from dock point (much smaller)
+            // HLS nose at local y=-40, Orion docking port at local y=20
+            const hlsDockOffset = 40;   // HLS center offset
+            const orionDockOffset = 20; // Orion center offset
             
             let hlsScreenX = screenCenterX + hlsDockOffset * zoom;
             let hlsScreenY = screenCenterY;
@@ -813,28 +880,32 @@ export default class Stage1 {
             let orionScreenY = screenCenterY;
             
             if (this.introPhase === 'undocking') {
-                // HLS moves DOWN (toward moon), Orion stays in orbit
-                hlsScreenY = screenCenterY + this.undockDistance * zoom;
+                // HLS moves RIGHT (away from Orion) during undocking
+                hlsScreenX = screenCenterX + hlsDockOffset * zoom + this.undockDistance * zoom;
             }
             
-            // Draw Orion spacecraft (nose pointing right = PI/2)
-            r.drawShape(this.orionCapsule, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.green);
+            // Draw Orion spacecraft (docking port pointing right toward HLS)
+            // From back to front: engine, service module, adapter ring, capsule, docking adapter
+            r.drawShape(this.orionEngine, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.green);
             r.drawShape(this.orionServiceModule, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.green);
+            r.drawShape(this.orionAdapterRing, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.green);
+            r.drawShape(this.orionCapsule, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.green);
+            r.drawShape(this.orionDockingAdapter, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.green);
             
-            // Draw crew windows
-            this.orionWindows.forEach(w => {
-                const cos = Math.cos(orionRotation);
-                const sin = Math.sin(orionRotation);
-                const wx = orionScreenX + (w.x * cos - w.y * sin) * zoom;
-                const wy = orionScreenY + (w.x * sin + w.y * cos) * zoom;
-                r.drawDot(wx, wy, 1.5 * zoom, r.colors.amber);
-            });
+            // Draw solar panels as horizontal lines from service module
+            const cos = Math.cos(orionRotation);
+            const sin = Math.sin(orionRotation);
             
-            // Draw four solar panels in X-pattern
-            r.drawShape(this.orionPanelUL, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.greenDim);
-            r.drawShape(this.orionPanelUR, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.greenDim);
-            r.drawShape(this.orionPanelLL, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.greenDim);
-            r.drawShape(this.orionPanelLR, orionScreenX, orionScreenY, orionRotation, zoom, r.colors.greenDim);
+            const drawPanelLine = (panel) => {
+                const x1 = orionScreenX + (panel[0].x * cos - panel[0].y * sin) * zoom;
+                const y1 = orionScreenY + (panel[0].x * sin + panel[0].y * cos) * zoom;
+                const x2 = orionScreenX + (panel[1].x * cos - panel[1].y * sin) * zoom;
+                const y2 = orionScreenY + (panel[1].x * sin + panel[1].y * cos) * zoom;
+                r.drawLine(x1, y1, x2, y2, r.colors.green);
+            };
+            
+            drawPanelLine(this.orionPanelLeft);
+            drawPanelLine(this.orionPanelRight);
             
             // Draw HLS (nose pointing left = -PI/2)
             r.drawShape(this.landerBody, hlsScreenX, hlsScreenY, hlsRotation, zoom, r.colors.green);
@@ -843,11 +914,11 @@ export default class Stage1 {
             r.drawShape(this.landingLegLeft, hlsScreenX, hlsScreenY, hlsRotation, zoom, r.colors.green);
             r.drawShape(this.landingLegCenter, hlsScreenX, hlsScreenY, hlsRotation, zoom, r.colors.green);
             
-            // Small RCS burst during undocking (fire downward thrusters)
+            // RCS burst during undocking - firing LEFT toward Orion to push HLS right
             if (this.introPhase === 'undocking' && this.lander.thrust > 0) {
-                const flameScale = 0.3 * zoom;
-                // Draw main engine firing (pushing HLS down toward moon)
-                r.drawShape(this.flameShape, hlsScreenX, hlsScreenY, hlsRotation, flameScale * 0.5, r.colors.amber);
+                const flameScale = (0.3 + Math.random() * 0.2) * zoom;
+                // Nose RCS fires toward Orion (LEFT on screen)
+                r.drawShape(this.noseRcsFlame, hlsScreenX, hlsScreenY, hlsRotation, flameScale, r.colors.amber);
             }
         }
         
@@ -858,7 +929,7 @@ export default class Stage1 {
         } else if (this.introPhase === 'undocking') {
             r.drawText('UNDOCKING...', 330, 500, 24, r.colors.amber);
         } else if (this.introPhase === 'zooming') {
-            r.drawText('BEGINNING DESCENT', 300, 500, 24, r.colors.amber);
+            r.drawText('DESCENDING TO SURFACE', 275, 500, 24, r.colors.amber);
         }
         
         // Skip hint
